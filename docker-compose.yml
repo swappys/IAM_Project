@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: keycloak
+
+    command:
+      - start-dev
+      - --import-realm
+
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      # Realm import files
+      - ./keycloak:/opt/keycloak/data/import
+
+      # Custom login theme
+      - ./themes/my-login-theme:/opt/keycloak/themes/my-login-theme
