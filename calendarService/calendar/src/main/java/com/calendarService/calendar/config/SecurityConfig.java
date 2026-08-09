@@ -115,7 +115,11 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
+                .headers(headers ->
+                        headers.frameOptions(frame -> frame.disable())
+                )
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/calendar")
                         .access((authentication, context) -> {
 
