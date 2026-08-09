@@ -27,6 +27,12 @@ public class DataInitializer {
                             .time(LocalDateTime.of(2026, 8, 11, 10, 0))
                             .build()
             );
+            eventRepository.save(
+                EventModel.builder()
+                            .title("Scrum Meeting")
+                            .time(LocalDateTime.of(2026, 8, 11, 12, 0))
+                            .build()
+            );
         };
     }
 }
