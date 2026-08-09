@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
                 }
 
                 console.log("Token:", keycloak.tokenParsed);
-
+                console.log("TokenJWT:", keycloak.token);
                 setAuthenticated(true);
 
                 setUser({
