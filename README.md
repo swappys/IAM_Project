@@ -1,4 +1,4 @@
-# OIDC Demo — React + Spring Boot + Keycloak
+# IAM_Project — React + Spring Boot + Keycloak
 
 This project demonstrates an OpenID Connect (OIDC) secured application using:
 
