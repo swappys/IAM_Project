@@ -6,9 +6,17 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.calendarService.calendar.models.ApiResponse;
+import com.calendarService.calendar.models.EventModel;
+import com.calendarService.calendar.models.RequestModel;
 import com.calendarService.calendar.service.CalendarService;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+
+
 
 @RestController
 @RequestMapping("/calendar")
@@ -21,8 +29,17 @@ public class CalendarController {
     }
 
     @GetMapping()
-    public List<Map<String, String>> getCalendar(){
+    public List<EventModel> getCalendar(){
             return calendarService.fetchEvents();
     
     }
+
+    @PostMapping("/addEvent")
+    public ResponseEntity<ApiResponse> addEvent(@RequestBody RequestModel entity) {
+        //TODO: process PUT request
+           return  calendarService.addEvent(entity);
+        
+    }
+    
+
 }
