@@ -17,9 +17,7 @@ function App() {
 
     async function loadCalendar() {
         try {
-            console.log("Calling calendar API");
             const response = await api.get("/calendar");
-            console.log("Calendar response:", response.data);
             setEvents(response.data);
 
         } catch (error) {

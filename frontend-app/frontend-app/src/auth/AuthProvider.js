@@ -20,8 +20,6 @@ export function AuthProvider({ children }) {
                     pkceMethod: "S256"
                 });
 
-                console.log("Keycloak authenticated:", auth);
-
                 if (!auth) {
 
                     console.log("No Keycloak session found, redirecting to login");
@@ -37,7 +35,6 @@ export function AuthProvider({ children }) {
                 }
 
                 console.log("Token:", keycloak.tokenParsed);
-                console.log("ACR:", keycloak.tokenParsed?.acr);
 
                 setAuthenticated(true);
 
