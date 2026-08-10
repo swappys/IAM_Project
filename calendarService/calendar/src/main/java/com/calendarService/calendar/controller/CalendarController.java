@@ -10,6 +10,8 @@ import com.calendarService.calendar.models.EventModel;
 import com.calendarService.calendar.models.RequestModel;
 import com.calendarService.calendar.service.CalendarService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +36,7 @@ public class CalendarController {
 
     //Add new events.
     @PostMapping("/addEvent")
-    public ResponseEntity<ApiResponse> addEvent(@RequestBody RequestModel entity) {
-        // TODO: process PUT request
+    public ResponseEntity<ApiResponse> addEvent(@Valid @RequestBody RequestModel entity) {
         return calendarService.addEvent(entity);
 
     }
