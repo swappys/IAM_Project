@@ -117,10 +117,9 @@ function App() {
                     setSuccess("");
                 }}
                 />
-
             )}
-            
-            {/* Add Event component */}
+
+            {/* Add Event form component */}
 
             {showAddEvent && acr === "otp" && (
 
