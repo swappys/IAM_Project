@@ -26,9 +26,7 @@ function EventList({ events, acr, formatDateTime }) {
                         {formatDateTime(event.time)}
                     </span>
                 </li>
-
             ))}
-
         </ul>
     );
 }
