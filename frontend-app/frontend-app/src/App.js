@@ -3,6 +3,7 @@ import { useAuth } from "./auth/useAuth";
 import api from "./services/api";
 import EventList from "./components/EventList";
 import AddEvent from "./components/AddEvent";
+import API_ENDPOINTS from "./services/endpoints";
 import "./App.css";
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
         try {
             setError("")
             const response = await api.get(
-                "/calendar/getEvents"
+                API_ENDPOINTS.CALENDAR.GET_EVENTS
             );
             setEvents(response.data);
 

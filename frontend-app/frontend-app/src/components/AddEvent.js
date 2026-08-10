@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../services/api";
-
+import API_ENDPOINTS from "../services/endpoints";
 function AddEvent({ onEventAdded, onClose }) {
 
     const [title, setTitle] = useState("");
@@ -17,7 +17,7 @@ function AddEvent({ onEventAdded, onClose }) {
             setSuccess("");
 
             const response = await api.post(
-                "/calendar/addEvent",
+                API_ENDPOINTS.CALENDAR.ADD_EVENT,
                 {
                     title: title,
                     time: time
