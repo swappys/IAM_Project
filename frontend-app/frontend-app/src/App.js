@@ -4,6 +4,7 @@ import api from "./services/api";
 import EventList from "./components/EventList";
 import AddEvent from "./components/AddEvent";
 import API_ENDPOINTS from "./services/endpoints";
+import CalendarHeader from "./components/CalendarHeader";
 import "./App.css";
 
 function App() {
@@ -88,42 +89,16 @@ function App() {
 
     return (
         <div className="container">
-            <h1>
-                Calendar Application
-            </h1>
-            {/* User information */}
-            <div className="user-box">
-                <p>
-                    Welcome, <b>{user?.username}</b>
-                </p>
+            
+            {/*Calendar Header Section*/}
+            <CalendarHeader
+                user={user}
+                keycloak={keycloak}
+                success={success}
+                error={error}
+            />
 
-                <button onClick={() => keycloak.logout()}>
-                    Logout
-                </button>
-            </div>
-            <hr/>
-
-            <h2>
-                Events
-            </h2>
-
-            {/* Success message */}
-
-            {success && (
-                <p className="success">
-                    {success}
-                </p>
-            )}
-
-            {/* Error message */}
-            {error && (
-                <p className="error">
-                    {error}
-                </p>
-            )}
-
-            {/* Events */}
-
+            {/* Events List*/}
             <EventList
                 events={events}
                 acr={acr}
