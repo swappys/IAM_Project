@@ -13,26 +13,23 @@ import com.calendarService.calendar.repository.EventRepository;
 public class DataInitializer {
 
     @Bean
-    CommandLineRunner initDatabase(EventRepository eventRepository){
-        return args->{
+    CommandLineRunner initDatabase(EventRepository eventRepository) {
+        return args -> {
             eventRepository.save(
-                EventModel.builder()
+                    EventModel.builder()
                             .title("Team Meeting")
                             .time(LocalDateTime.of(2026, 8, 10, 10, 0))
-                            .build()
-            );
+                            .build());
             eventRepository.save(
-                EventModel.builder()
+                    EventModel.builder()
                             .title("Management Meeting")
                             .time(LocalDateTime.of(2026, 8, 11, 10, 0))
-                            .build()
-            );
+                            .build());
             eventRepository.save(
-                EventModel.builder()
+                    EventModel.builder()
                             .title("Scrum Meeting")
                             .time(LocalDateTime.of(2026, 8, 11, 12, 0))
-                            .build()
-            );
+                            .build());
         };
     }
 }

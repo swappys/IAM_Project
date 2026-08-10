@@ -18,146 +18,126 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-
 import jakarta.servlet.http.HttpServletResponse;
 import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 public class SecurityConfig {
-    private Boolean otpAuthenticated = false;
-    private Boolean hasRole = false;
-    
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        private Boolean otpAuthenticated = false;
+        private Boolean hasRole = false;
 
-        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-            Map<String, Object> realmAccess =
-                    jwt.getClaim("realm_access");
+        //Map the roles so that it can be parsed.
+        @Bean
+        JwtAuthenticationConverter jwtAuthenticationConverter() {
+                JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
-            if (realmAccess == null) {
-                return List.of();
-            }
+                converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+                        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
 
-            Object rolesObject = realmAccess.get("roles");
+                        if (realmAccess == null) {
+                                return List.of();
+                        }
 
-            if (!(rolesObject instanceof List<?>)) {
-                return List.of();
-            }
+                        Object rolesObject = realmAccess.get("roles");
 
-            List<?> roles = (List<?>) rolesObject;
+                        if (!(rolesObject instanceof List<?>)) {
+                                return List.of();
+                        }
 
-            return roles.stream()
-                    .map(role ->
-                            new SimpleGrantedAuthority(
-                                    "ROLE_" + role.toString()
-                            )
-                    )
-                    .collect(Collectors.toList());
-        });
+                        List<?> roles = (List<?>) rolesObject;
 
-        return converter;
-    }
+                        return roles.stream()
+                                        .map(role -> new SimpleGrantedAuthority(
+                                                        "ROLE_" + role.toString()))
+                                        .collect(Collectors.toList());
+                });
 
-    @Bean
-    AccessDeniedHandler accessDeniedHandler() {
+                return converter;
+        }
 
-        return (request, response, accessDeniedException) -> {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        //Check if role is present and authenticated using OTP else handle the error and send response.
+        @Bean
+        AccessDeniedHandler accessDeniedHandler() {
 
-            Map<String, Object> body = new HashMap<>();
+                return (request, response, accessDeniedException) -> {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-            body.put("status", 403);
-            if (otpAuthenticated==false && hasRole==true){
-                body.put(
-                    "message",
-                    "You are not authorized to view this resource as you have MFA disabled"
-                );
-            }else{
-                body.put(
-                    "message",
-                    "You are not authorized to view this resource"
-                );
-            }
-            new ObjectMapper()
-                    .writeValue(response.getOutputStream(), body);
-        };
-    }
+                        Map<String, Object> body = new HashMap<>();
 
-    @Bean
-    SecurityFilterChain securityFilterChain(
-            HttpSecurity http,
-            JwtAuthenticationConverter jwtAuthenticationConverter,
-            AccessDeniedHandler accessDeniedHandler)
-            throws Exception {
+                        body.put("status", 403);
+                        if (otpAuthenticated == false && hasRole == true) {
+                                body.put(
+                                                "message",
+                                                "You are not authorized to view this resource as you have MFA disabled");
+                        } else {
+                                body.put(
+                                                "message",
+                                                "You are not authorized to view this resource");
+                        }
+                        new ObjectMapper()
+                                        .writeValue(response.getOutputStream(), body);
+                };
+        }
 
-        return http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
-                .headers(headers ->
-                        headers.frameOptions(frame -> frame.disable())
-                )
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/calendar")
-                        .access((authentication, context) -> {
+        //Build filter chain to force the resource server to check for JWT.
+        @Bean
+        SecurityFilterChain securityFilterChain(
+                        HttpSecurity http,
+                        JwtAuthenticationConverter jwtAuthenticationConverter,
+                        AccessDeniedHandler accessDeniedHandler)
+                        throws Exception {
 
-                            Authentication auth =
-                                    authentication.get();
-            
-                            // Make sure the authentication is JWT authentication.
-                            if (!(auth instanceof JwtAuthenticationToken jwtAuth)) {
-                                return new AuthorizationDecision(false);
-                            }
-                            Jwt jwt = jwtAuth.getToken();
-                            /*
-                             * Get acr from JWT.
-                             *
-                             * IF Password login: then acr = "password"
-                             *
-                             * IF OTP login: then acr = "otp"
-                             */
-                            String acr = jwt.getClaimAsString("acr");
-                            /*
-                             * Check that OTP was completed.
-                             */
-                             otpAuthenticated = "otp".equals(acr);
+                return http
+                                .csrf(csrf -> csrf.disable())
+                                .cors(cors -> {
+                                })
+                                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                                .authorizeHttpRequests(requests -> requests
+                                                .requestMatchers("/h2-console/**").permitAll()
+                                                .requestMatchers("/calendar")
+                                                .access((authentication, context) -> {
 
-                            //Check that the user has the required role.
-                             hasRole =
-                                    auth.getAuthorities()
-                                            .stream()
-                                            .anyMatch(authority ->
-                                                    authority
-                                                        .getAuthority()
-                                                        .equals("ROLE_my-role")
-                                            );
-                            /*
-                             * User must satisfy BOTH conditions:
-                             * 1. Has my-role
-                             * 2. Completed OTP
-                             */
-                            return new AuthorizationDecision(
-                                    otpAuthenticated && hasRole
-                            );
-                        })
-                        .anyRequest()
-                        .authenticated()
-                )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwt ->
-                                jwt.jwtAuthenticationConverter(
-                                        jwtAuthenticationConverter
-                                )
-                        )
-                )
-                .exceptionHandling(exception ->
-                        exception.accessDeniedHandler(
-                                accessDeniedHandler
-                        )
-                )
-                .build();
-    }
+                                                        Authentication auth = authentication.get();
+
+                                                        // Make sure the authentication is JWT authentication.
+                                                        if (!(auth instanceof JwtAuthenticationToken jwtAuth)) {
+                                                                return new AuthorizationDecision(false);
+                                                        }
+                                                        Jwt jwt = jwtAuth.getToken();
+                                                        /*
+                                                         * Get acr from JWT.
+                                                         *
+                                                         * IF Password login: then acr = "password"
+                                                         *
+                                                         * IF OTP login: then acr = "otp"
+                                                         */
+                                                        String acr = jwt.getClaimAsString("acr");
+                                                        /*
+                                                         * Check that OTP was completed.
+                                                         */
+                                                        otpAuthenticated = "otp".equals(acr);
+
+                                                        // Check that the user has the required role.
+                                                        hasRole = auth.getAuthorities()
+                                                                        .stream()
+                                                                        .anyMatch(authority -> authority
+                                                                                        .getAuthority()
+                                                                                        .equals("ROLE_my-role"));
+                                                        /*
+                                                         * User must satisfy BOTH conditions:
+                                                         * 1. Has my-role
+                                                         * 2. Completed OTP
+                                                         */
+                                                        return new AuthorizationDecision(
+                                                                        otpAuthenticated && hasRole);
+                                                })
+                                                .anyRequest()
+                                                .authenticated())
+                                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(
+                                                jwtAuthenticationConverter)))
+                                .exceptionHandling(exception -> exception.accessDeniedHandler(
+                                                accessDeniedHandler))
+                                .build();
+        }
 }
-

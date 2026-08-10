@@ -24,7 +24,7 @@ public class EventModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(name="title")
+    @Column(name = "title")
     public String title;
 
     @Column(name = "time")

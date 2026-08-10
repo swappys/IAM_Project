@@ -15,30 +15,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @RestController
 @RequestMapping("/calendar")
 public class CalendarController {
-    
+
     final CalendarService calendarService;
 
     CalendarController(CalendarService calendarService) {
         this.calendarService = calendarService;
     }
 
+    //Get all events.
     @GetMapping()
-    public List<EventModel> getCalendar(){
-            return calendarService.fetchEvents();
-    
+    public List<EventModel> getCalendar() {
+        return calendarService.fetchEvents();
+
     }
 
+    //Add new events.
     @PostMapping("/addEvent")
     public ResponseEntity<ApiResponse> addEvent(@RequestBody RequestModel entity) {
-        //TODO: process PUT request
-           return  calendarService.addEvent(entity);
-        
+        // TODO: process PUT request
+        return calendarService.addEvent(entity);
+
     }
-    
 
 }
