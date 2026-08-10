@@ -1,4 +1,4 @@
-# IAM_Project — React + Spring Boot + Keycloak
+# Front-End App (Calendar Application) — React + Spring Boot + Keycloak
 
 This project demonstrates an OpenID Connect (OIDC) secured application using:
 
