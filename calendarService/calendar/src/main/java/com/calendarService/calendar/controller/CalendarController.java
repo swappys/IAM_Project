@@ -26,7 +26,7 @@ public class CalendarController {
     }
 
     //Get all events.
-    @GetMapping()
+    @GetMapping("/getEvents")
     public List<EventModel> getCalendar() {
         return calendarService.fetchEvents();
 

@@ -32,7 +32,7 @@ function App() {
         try {
             setError("")
             const response = await api.get(
-                "/calendar"
+                "/calendar/getEvents"
             );
             setEvents(response.data);
 

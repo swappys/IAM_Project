@@ -95,7 +95,7 @@ public class SecurityConfig {
                                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                                 .authorizeHttpRequests(requests -> requests
                                                 .requestMatchers("/h2-console/**").permitAll()
-                                                .requestMatchers("/calendar")
+                                                .requestMatchers("/calendar/*")
                                                 .access((authentication, context) -> {
 
                                                         Authentication auth = authentication.get();
