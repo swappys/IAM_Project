@@ -8,9 +8,9 @@ function EventList({ events, acr, formatDateTime }) {
         );
     }
 
-    if (events.length === 0) {
+   /* if (events.length === 0) {
         return null;
-    }
+    }*/
 
     return (
         <ul className="events">
