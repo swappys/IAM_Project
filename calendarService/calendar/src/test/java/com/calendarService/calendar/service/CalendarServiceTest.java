@@ -112,7 +112,7 @@ class CalendarServiceTest {
 
         calendarService.addEvent(request);
 
-        verify(eventRepository).save(argThat(savedEvent -> savedEvent.title.equals(
+        verify(eventRepository).save(argThat(savedEvent -> savedEvent.getTitle().equals(
                     "Team Meeting"
                 )
             )
@@ -122,6 +122,7 @@ class CalendarServiceTest {
 
     @Test
     void addEvent_shouldReturnInternalServerErrorWhenSaveFails() {
+
 
         when(eventRepository.save(any(EventModel.class)))
                 .thenThrow(

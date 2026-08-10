@@ -22,11 +22,11 @@ import lombok.Setter;
 public class EventModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    private Long id;
 
     @Column(name = "title")
-    public String title;
+    private String title;
 
     @Column(name = "time")
-    public LocalDateTime time;
+    private LocalDateTime time;
 }

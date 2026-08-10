@@ -27,8 +27,8 @@ public class CalendarService {
     public ResponseEntity<ApiResponse> addEvent(RequestModel model){
         try{
             EventModel eventModel = EventModel.builder()
-                                                .title(model.title)
-                                                .time(model.time)
+                                                .title(model.getTitle())
+                                                .time(model.getTime())
                                                 .build();
             EventModel savedEvent = eventRepository.save(eventModel);
             ApiResponse response = ApiResponse.builder()
