@@ -5,6 +5,7 @@ import EventList from "./components/EventList";
 import AddEvent from "./components/AddEvent";
 import API_ENDPOINTS from "./services/endpoints";
 import CalendarHeader from "./components/CalendarHeader";
+import CalendarActions from "./components/CalendarActions";
 import "./App.css";
 
 function App() {
@@ -89,7 +90,7 @@ function App() {
 
     return (
         <div className="container">
-            
+
             {/*Calendar Header Section*/}
             <CalendarHeader
                 user={user}
@@ -108,21 +109,17 @@ function App() {
             {/* Refresh and Add Event buttons */}
             {acr === "otp" && (
 
-                <div className="button-group">
-
-                    <button onClick={() => loadCalendar()}>
-                        Refresh
-                    </button>
-
-                    <button onClick={() => { setShowAddEvent(true); 
-                            setError("");
-                            setSuccess("");
-                        }}> Add Event </button>
-                </div>
+                <CalendarActions
+                    onRefresh={loadCalendar}
+                    onAddEvent={() => {
+                    setShowAddEvent(true);
+                    setError("");
+                    setSuccess("");
+                }}
+                />
 
             )}
-
-
+            
             {/* Add Event component */}
 
             {showAddEvent && acr === "otp" && (
