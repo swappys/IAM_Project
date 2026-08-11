@@ -33,7 +33,6 @@ export function AuthProvider({ children }) {
 
                     return;
                 }
-                console.log("ACR:", keycloak.tokenParsed);
                 console.log("ACR:", keycloak.tokenParsed?.acr);
                 setAuthenticated(true);
 
