@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
             try {
 
                 const auth = await keycloak.init({
-                    onLoad: "check-sso",
+                    onLoad: "login-required",
                     pkceMethod: "S256"
                 });
 
@@ -33,6 +33,7 @@ export function AuthProvider({ children }) {
 
                     return;
                 }
+                console.log("ACR:", keycloak.tokenParsed);
                 console.log("ACR:", keycloak.tokenParsed?.acr);
                 setAuthenticated(true);
 
